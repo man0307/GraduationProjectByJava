@@ -4,39 +4,38 @@ import java.util.ArrayList;
 
 /**
  * 计算矩阵乘法的控制类
+ *
  * @author manchaoyang
  */
 public class MatrixMultiplication {
-    private MatrixMultiplication matrixMultiplication;
+    private MatrixMultiplicationAlgorithm matrixMultiplicationAlgorithm;
 
 
-
-    public int[][] computeByArray(int[][] matrix1,int[][] matrix2){
-        return null;
+    public int[][] computeByArray(int[][] matrix1, int[][] matrix2) {
+        return matrixMultiplicationAlgorithm.computeByArray(matrix1,matrix2);
     }
 
     public ArrayList<ArrayList<Integer>> computeByList(ArrayList<ArrayList<Integer>> matrix1,
-                                                       ArrayList<ArrayList<Integer>> matrix2){
+                                                       ArrayList<ArrayList<Integer>> matrix2) {
         return null;
     }
 
-    public void setMatrixMultiplication(MatrixMultiplication matrixMultiplication) {
-        this.matrixMultiplication = matrixMultiplication;
+    public void setMatrixMultiplicationAlgorithm(MatrixMultiplicationAlgorithm matrixMultiplicationAlgorithm) {
+        this.matrixMultiplicationAlgorithm = matrixMultiplicationAlgorithm;
     }
 
-    public MatrixMultiplication(MatrixMultiplication matrixMultiplication){
-        this.matrixMultiplication = matrixMultiplication;
+    public MatrixMultiplication(MatrixMultiplicationAlgorithm matrixMultiplicationAlgorithm) {
+        this.matrixMultiplicationAlgorithm = matrixMultiplicationAlgorithm;
     }
 
-    private boolean judgeMatrixLegal(int[][] matrix1,int[][] matrix2){
+    private boolean judgeMatrixLegal(int[][] matrix1, int[][] matrix2) {
         return false;
     }
 
     private boolean judgeMatrixLegal(ArrayList<ArrayList<Integer>> matrix1,
-                                     ArrayList<ArrayList<Integer>> matrix2){
+                                     ArrayList<ArrayList<Integer>> matrix2) {
         return false;
     }
-
 
 
 }
