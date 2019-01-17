@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public abstract class MatrixMultiplicationAlgorithm {
 
-    protected boolean judgeMatrixLegal(int[][] matrix1, int[][] matrix2) {
+    protected boolean judgeMatrixLegal(long[][] matrix1, long[][] matrix2) {
         return matrix1 == null || matrix2 == null || matrix1.length != matrix2.length
                 || matrix1.length != matrix1[0].length || matrix2.length != matrix2[0].length;
     }
@@ -19,14 +19,18 @@ public abstract class MatrixMultiplicationAlgorithm {
      * @param matrix2
      * @return
      */
-    public abstract int[][] computeByArray(int[][] matrix1, int[][] matrix2);
+    public abstract long[][] computeByArray(long[][] matrix1, long[][] matrix2) throws InterruptedException;
 
-    /**
-     * 链表形式的矩阵相乘
-     *
-     * @return
-     */
-    public abstract ArrayList<ArrayList<Integer>> computeByList(ArrayList<ArrayList<Integer>> matrix1,
-                                                                ArrayList<ArrayList<Integer>> matrix2);
-
+    protected void printMatrix(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (j != matrix[0].length - 1) {
+                    System.out.print(matrix[i][j] + ",");
+                } else {
+                    System.out.print(matrix[i][j]);
+                }
+            }
+            System.out.println();
+        }
+    }
 }

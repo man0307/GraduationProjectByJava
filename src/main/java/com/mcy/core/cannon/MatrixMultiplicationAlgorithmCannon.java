@@ -1,6 +1,8 @@
 package com.mcy.core.cannon;
 
-import java.util.ArrayList;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import java.util.concurrent.*;
 
 /**
  * 用Cannon算法实现矩阵相乘
@@ -9,6 +11,16 @@ import java.util.ArrayList;
  */
 public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlgorithm {
 
+    private static int AVAILABLE_PROCESSORS = 16;
+
+    private ThreadFactory cannonComputeThreadFactory = new ThreadFactoryBuilder()
+            .setNameFormat("cannon-compute-matrix-pool-%d").build();
+
+    private ExecutorService cannonThreadPool = new ThreadPoolExecutor(AVAILABLE_PROCESSORS, AVAILABLE_PROCESSORS,
+            100L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(1024), cannonComputeThreadFactory,
+            new ThreadPoolExecutor.AbortPolicy());
+
     /**
      * 按照一定的规则将矩阵分成的块循环整体左移
      *
@@ -16,7 +28,7 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
      * @param subMatrixLength
      * @param step
      */
-    private void loopLeftShift(int[][] matrix, int subMatrixLength, int step) {
+    private void loopLeftShift(long[][] matrix, int subMatrixLength, int step) {
         int rowMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
         for (int i = 0; i < rowMatrixCount; i++) {
             loopLeftShiftByRow(matrix, subMatrixLength, i, step);
@@ -30,7 +42,7 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
      * @param subMatrixLength
      * @param step
      */
-    private void loopUpShift(int[][] matrix, int subMatrixLength, int step) {
+    private void loopUpShift(long[][] matrix, int subMatrixLength, int step) {
         int colMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
         for (int j = 0; j < colMatrixCount; j++) {
             loopUpShiftByColumn(matrix, subMatrixLength, j, step);
@@ -45,9 +57,9 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
      * @param subMatrixLength
      * @param step
      */
-    private void loopLeftShiftByRow(int[][] matrix, int subMatrixLength, int rowNum, int step) {
+    private void loopLeftShiftByRow(long[][] matrix, int subMatrixLength, int rowNum, int step) {
         int colMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
-        int[][] subMatrix = extractSubMatrix(matrix, rowNum, 0, subMatrixLength);
+        long[][] subMatrix = extractSubMatrix(matrix, rowNum, 0, subMatrixLength);
         int nowIndex = 0;
         for (int k = 0; k < colMatrixCount; k++) {
             int nextIndex = (nowIndex + step) % colMatrixCount;
@@ -63,9 +75,9 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
      * @param subMatrixLength
      * @param step
      */
-    private void loopUpShiftByColumn(int[][] matrix, int subMatrixLength, int columnNum, int step) {
+    private void loopUpShiftByColumn(long[][] matrix, int subMatrixLength, int columnNum, int step) {
         int colMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
-        int[][] subMatrix = extractSubMatrix(matrix, 0, columnNum, subMatrixLength);
+        long[][] subMatrix = extractSubMatrix(matrix, 0, columnNum, subMatrixLength);
         int nowIndex = 0;
         for (int k = 0; k < colMatrixCount; k++) {
             int nextIndex = (nowIndex + step) % colMatrixCount;
@@ -86,8 +98,8 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
      * @param j
      * @return
      */
-    private int[][] extractSubMatrix(int[][] matrix, int i, int j, int subMatrixLength) {
-        int[][] subMatrix = new int[subMatrixLength][subMatrixLength];
+    private long[][] extractSubMatrix(long[][] matrix, int i, int j, int subMatrixLength) {
+        long[][] subMatrix = new long[subMatrixLength][subMatrixLength];
         int begRow = i * subMatrixLength;
         int begCol = j * subMatrixLength;
         for (int row = 0; row < subMatrixLength; row++) {
@@ -107,9 +119,9 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
      * @param j
      * @return
      */
-    private int[][] copyMatrixToPointIndex(int[][] matrix, int[][] subMatrix, int i, int j) {
+    private long[][] copyMatrixToPointIndex(long[][] matrix, long[][] subMatrix, int i, int j) {
         int subMatrixLength = subMatrix.length;
-        int[][] oldSubMatrix = new int[subMatrixLength][subMatrixLength];
+        long[][] oldSubMatrix = new long[subMatrixLength][subMatrixLength];
         int begRow = i * subMatrixLength;
         int begCol = j * subMatrixLength;
         for (int row = 0; row < subMatrixLength; row++) {
@@ -122,12 +134,11 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
     }
 
     private int getSubMatrixLength(int matrixLength) {
-        int processorsCount = Runtime.getRuntime().availableProcessors();
-        int subMatrixLength = (int) Math.sqrt(processorsCount);
-        while (subMatrixLength > 0 && matrixLength % subMatrixLength != 0) {
-            subMatrixLength--;
+        int mod = (int) Math.sqrt(AVAILABLE_PROCESSORS);
+        while (mod > 0 && matrixLength % mod != 0) {
+            mod--;
         }
-        return subMatrixLength;
+        return matrixLength / mod;
     }
 
     /**
@@ -136,37 +147,91 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
      * @param matrix1
      * @param matrix2
      */
-    private void dataAlignment(int[][] matrix1, int[][] matrix2) {
-        //先按行移动matrix1
-        //再按列移动matrix2
+    private void dataAlignment(long[][] matrix1, long[][] matrix2, int subMatrixLength) {
+        for (int i = 1; i < matrix1.length / subMatrixLength; i++) {
+            loopLeftShiftByRow(matrix1, subMatrixLength, i, i);
+        }
+        for (int j = 1; j < matrix2[0].length / subMatrixLength; j++) {
+            loopUpShiftByColumn(matrix2, subMatrixLength, j, j);
+        }
     }
 
     @Override
-    public int[][] computeByArray(int[][] matrix1, int[][] matrix2) {
+    public long[][] computeByArray(final long[][] matrix1, final long[][] matrix2) throws InterruptedException {
         if (judgeMatrixLegal(matrix1, matrix2)) {
             return null;
         }
-        int[][] result = new int[matrix1.length][matrix1[0].length];
+        long[][] result = new long[matrix1.length][matrix1[0].length];
         int matrixLength = matrix1.length;
-        int subMatrixLength = getSubMatrixLength(matrixLength);
+        final int subMatrixLength = getSubMatrixLength(matrixLength);
         //数据对准
-
+        dataAlignment(matrix1, matrix2, subMatrixLength);
         //计算点积
+        for (int m = 0; m < matrixLength / subMatrixLength; m++) {
+            CountDownLatch countDownLatch = new CountDownLatch((matrixLength / subMatrixLength) * (matrixLength / subMatrixLength));
+            long begTime = System.currentTimeMillis();
+            for (int i = 0; i < matrixLength / subMatrixLength; i++) {
+                for (int j = 0; j < matrixLength / subMatrixLength; j++) {
+                    cannonThreadPool.execute(new ComputingUnitTask(matrix1, matrix2, result, i, j, m, countDownLatch, subMatrixLength));
+                }
+            }
+            countDownLatch.await();
+
+//            loopLeftShift(matrix1, subMatrixLength, 1);
+//            loopUpShift(matrix2, subMatrixLength, 1);
+        }
+
         return result;
     }
 
-    @Override
-    public ArrayList<ArrayList<Integer>> computeByList(ArrayList<ArrayList<Integer>> matrix1, ArrayList<ArrayList<Integer>> matrix2) {
-        return null;
-    }
 
     /**
      * 每个计算单元代表一个处理器线程
      */
-    private class ComputingUnit implements Runnable {
+    private class ComputingUnitTask implements Runnable {
+        /**
+         * 下面三个矩阵不产生写冲突 不需要加锁
+         */
+        private long[][] matrix1;
+        private long[][] matrix2;
+        private long[][] result;
+        private int i;
+        private int j;
+        private int times;
+        private CountDownLatch taskNumber;
+        private int subMatrixLength;
+
+        public ComputingUnitTask(long[][] matrix1, long[][] matrix2, long[][] result, int i, int j, int times,
+                                 CountDownLatch taskNumber, int subMatrixLength) {
+            this.matrix1 = matrix1;
+            this.matrix2 = matrix2;
+            this.result = result;
+            this.i = i;
+            this.j = j;
+            this.taskNumber = taskNumber;
+            this.subMatrixLength = subMatrixLength;
+            this.times = times;
+        }
 
         public void run() {
+            int rowBeg = i * subMatrixLength;
+            int columnBeg = j * subMatrixLength;
+            int rowData = (i + times) % (matrix1.length / subMatrixLength) * subMatrixLength;
+            int columnData = (j + times) % (matrix1.length / subMatrixLength) * subMatrixLength;
+            for (int h = 0; h < subMatrixLength; h++) {
+                for (int m = 0; m < subMatrixLength; m++) {
+                    for (int k = 0; k < subMatrixLength; k++) {
+                        result[rowBeg + h][columnBeg + m] += matrix1[rowBeg + h][columnData + k] * matrix2[rowData + k][columnBeg + m];
+                    }
+                }
+            }
+
+            taskNumber.countDown();
+        }
+
+        private void matrixMultiplication() {
 
         }
     }
+
 }

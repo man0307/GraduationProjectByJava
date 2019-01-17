@@ -11,7 +11,7 @@ public class MatrixMultiplication {
     private MatrixMultiplicationAlgorithm matrixMultiplicationAlgorithm;
 
 
-    public int[][] computeByArray(int[][] matrix1, int[][] matrix2) {
+    public long[][] computeByArray(long[][] matrix1, long[][] matrix2) throws InterruptedException {
         return matrixMultiplicationAlgorithm.computeByArray(matrix1,matrix2);
     }
 
