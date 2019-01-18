@@ -1,4 +1,4 @@
-package com.mcy.core.cannon;
+package com.mcy.core.cannonAndFox;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
@@ -6,15 +6,14 @@ import java.util.concurrent.*;
 
 /**
  * 用Cannon算法实现矩阵相乘
- *
  * @author manchaoyang 2019/1/15
  */
 public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlgorithm {
 
-    private static int AVAILABLE_PROCESSORS = 16;
+    private static int AVAILABLE_PROCESSORS = 20;
 
     private ThreadFactory cannonComputeThreadFactory = new ThreadFactoryBuilder()
-            .setNameFormat("cannon-compute-matrix-pool-%d").build();
+            .setNameFormat("cannonAndFox-compute-matrix-pool-%d").build();
 
     private ExecutorService cannonThreadPool = new ThreadPoolExecutor(AVAILABLE_PROCESSORS, AVAILABLE_PROCESSORS,
             100L, TimeUnit.MILLISECONDS,
@@ -169,16 +168,12 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
         //计算点积
         for (int m = 0; m < matrixLength / subMatrixLength; m++) {
             CountDownLatch countDownLatch = new CountDownLatch((matrixLength / subMatrixLength) * (matrixLength / subMatrixLength));
-            long begTime = System.currentTimeMillis();
             for (int i = 0; i < matrixLength / subMatrixLength; i++) {
                 for (int j = 0; j < matrixLength / subMatrixLength; j++) {
                     cannonThreadPool.execute(new ComputingUnitTask(matrix1, matrix2, result, i, j, m, countDownLatch, subMatrixLength));
                 }
             }
             countDownLatch.await();
-
-//            loopLeftShift(matrix1, subMatrixLength, 1);
-//            loopUpShift(matrix2, subMatrixLength, 1);
         }
 
         return result;

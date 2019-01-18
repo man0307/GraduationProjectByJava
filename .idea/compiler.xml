@@ -12,6 +12,9 @@
     <bytecodeTargetLevel target="8" />
   </component>
   <component name="JavacSettings">
-    <option name="DEPRECATION" value="false" />
+    <option name="GENERATE_NO_WARNINGS" value="true" />
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="graduation-project" options="" />
+    </option>
   </component>
 </project>

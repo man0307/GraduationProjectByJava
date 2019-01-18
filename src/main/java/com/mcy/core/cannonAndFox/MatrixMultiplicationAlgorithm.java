@@ -1,6 +1,4 @@
-package com.mcy.core.cannon;
-
-import java.util.ArrayList;
+package com.mcy.core.cannonAndFox;
 
 /**
  * 计算矩阵乘法的接口

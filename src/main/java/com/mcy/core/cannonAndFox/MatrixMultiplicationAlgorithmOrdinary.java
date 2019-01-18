@@ -1,7 +1,8 @@
-package com.mcy.core.cannon;
+package com.mcy.core.cannonAndFox;
 
-import java.util.ArrayList;
-
+/**
+ * @author manchaoyang
+ */
 public class MatrixMultiplicationAlgorithmOrdinary extends MatrixMultiplicationAlgorithm {
 
     @Override

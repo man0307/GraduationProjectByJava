@@ -1,8 +1,6 @@
-package com.mcy.core.cannon;
+package com.mcy.core.cannonAndFox;
 
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class MatrixMultiplicationAlgorithmTest {
     /**
@@ -40,10 +38,10 @@ public class MatrixMultiplicationAlgorithmTest {
         mockMatrix(matrix2);
         MatrixMultiplication matrixMultiplication = new MatrixMultiplication(new MatrixMultiplicationAlgorithmOrdinary());
         long begTime = System.currentTimeMillis();
-        long[][] result = matrixMultiplication.computeByArray(matrix1, matrix2);
+        long[][] result = matrixMultiplication.computeByArray(matrix3, matrix4);
         long endTime = System.currentTimeMillis();
         System.out.println((endTime - begTime) + " ms");
-//        printMatrix(result);
+        printMatrix(result);
     }
 
     @Test
@@ -52,10 +50,22 @@ public class MatrixMultiplicationAlgorithmTest {
         mockMatrix(matrix2);
         MatrixMultiplication matrixMultiplication = new MatrixMultiplication(new MatrixMultiplicationAlgorithmCannon());
         long begTime = System.currentTimeMillis();
-        long[][] result = matrixMultiplication.computeByArray(matrix1, matrix2);
+        long[][] result = matrixMultiplication.computeByArray(matrix3, matrix4);
         long endTime = System.currentTimeMillis();
         System.out.println((endTime - begTime) + " ms");
-//        printMatrix(result);
+        printMatrix(result);
+    }
+
+    @Test
+    public void foxTest() throws InterruptedException {
+        mockMatrix(matrix1);
+        mockMatrix(matrix2);
+        MatrixMultiplication matrixMultiplication = new MatrixMultiplication(new MatrixMultiplicationAlgorithmFox());
+        long begTime = System.currentTimeMillis();
+        long[][] result = matrixMultiplication.computeByArray(matrix3, matrix4);
+        long endTime = System.currentTimeMillis();
+        System.out.println((endTime - begTime) + " ms");
+        printMatrix(result);
     }
 
     private void printMatrix(long[][] matrix) {
