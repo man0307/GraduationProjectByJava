@@ -10,7 +10,26 @@ import java.util.concurrent.*;
  */
 public class MutuallyExclusive {
 
-    private static int TEST_NUMBER = 102400;
+    public static class DataTemp {
+
+        private int data = 0;
+
+        public synchronized void addDataWithClock() {
+            data++;
+        }
+
+        ;
+
+        public void addDataWithoutClock() {
+            data++;
+        }
+
+        public int getData() {
+            return data;
+        }
+    }
+
+    private static int TEST_NUMBER = 100;
 
     /**
      * 进行加锁自增
@@ -21,13 +40,16 @@ public class MutuallyExclusive {
 
         private CountDownLatch countDownLatch;
 
-        public TaskThread1(CountDownLatch countDownLatch) {
+        private DataTemp dataTemp;
+
+        public TaskThread1(CountDownLatch countDownLatch, DataTemp dataTemp) {
             this.countDownLatch = countDownLatch;
+            this.dataTemp = dataTemp;
         }
 
         public void run() {
-            synchronized (number) {
-                ++number;
+            for (int i = 0; i < 100; i++) {
+                dataTemp.addDataWithClock();
             }
             countDownLatch.countDown();
         }
@@ -47,12 +69,18 @@ public class MutuallyExclusive {
 
         private CountDownLatch countDownLatch;
 
-        public TaskThread2(CountDownLatch countDownLatch) {
+        private DataTemp dataTemp;
+
+        public TaskThread2(CountDownLatch countDownLatch, DataTemp dataTemp) {
             this.countDownLatch = countDownLatch;
+            this.dataTemp = dataTemp;
         }
 
+
         public void run() {
-            number++;
+            for (int i = 0; i < 100; i++) {
+                dataTemp.addDataWithoutClock();
+            }
             countDownLatch.countDown();
         }
 
@@ -66,27 +94,29 @@ public class MutuallyExclusive {
          * 调用加锁的方法
          */
         MutuallyExclusive exclusive = new MutuallyExclusive();
+        DataTemp dataTemp = new DataTemp();
         CountDownLatch countDownLatch = new CountDownLatch(TEST_NUMBER);
         long begTime = System.currentTimeMillis();
         for (int i = 0; i < TEST_NUMBER; i++) {
-            new TaskThread1(countDownLatch).run();
+            new Thread(new TaskThread1(countDownLatch, dataTemp)).start();
         }
         countDownLatch.await();
         long endTime = System.currentTimeMillis();
-        System.out.println("加锁的方式得到的最终结果为:" + TaskThread1.getNumber());
+        System.out.println("加锁的方式得到的最终结果为:" + dataTemp.getData());
         System.out.println("加锁的方式需要 " + (endTime - begTime) + " ms");
         /**
          * 调用不加锁的方法
          */
         countDownLatch = new CountDownLatch(TEST_NUMBER);
+        dataTemp = new DataTemp();
         MutuallyExclusive exclusive1 = new MutuallyExclusive();
         begTime = System.currentTimeMillis();
         for (int i = 0; i < TEST_NUMBER; i++) {
-            new TaskThread2(countDownLatch).run();
+            new Thread(new TaskThread2(countDownLatch, dataTemp)).start();
         }
         countDownLatch.await();
         endTime = System.currentTimeMillis();
-        System.out.println("不加锁的方式得到的最终结果为:" + TaskThread2.getNumber());
+        System.out.println("不加锁的方式得到的最终结果为:" + dataTemp.getData());
         System.out.println("不加锁的方式需要 " + (endTime - begTime) + " ms");
     }
 }
