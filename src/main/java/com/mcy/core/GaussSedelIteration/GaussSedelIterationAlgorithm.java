@@ -11,7 +11,7 @@ public abstract class GaussSedelIterationAlgorithm {
      * @param X 零级向量
      * @return
      */
-    public abstract int[] gaussSedelIteration(double[][] A, double[] B, double[] X);
+    public abstract double[] gaussSedelIteration(double[][] A, double[] B, double[] X) throws InterruptedException;
 
     public double getErrorLimit() {
         return errorLimit;

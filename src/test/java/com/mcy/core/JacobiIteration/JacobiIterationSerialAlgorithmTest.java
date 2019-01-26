@@ -42,12 +42,15 @@ public class JacobiIterationSerialAlgorithmTest {
         double[][] A = mockMatrixA(3);
         double[] B = mockMatrixB(3);
         double[] X = mockMatrixX(3);
-        System.out.println(Arrays.deepToString(A));
-        System.out.println(Arrays.toString(B));
-        System.out.println(Arrays.toString(X));
+
+
+        double[][] a={{5,2,1},{-1,4,2},{2,-3,10}};
+        double b[]={-12,20,3};
+        double[] x={0,0,0};
+
 
         long begTime = System.currentTimeMillis();
-        double[] result = jacobiIterationSerialAlgorithm.jacobiIterationCompute(A, B, X);
+        double[] result = jacobiIterationSerialAlgorithm.jacobiIterationCompute(a, b, x);
         long endTime = System.currentTimeMillis();
         System.out.println("串行雅克比算法耗时:" + (endTime - begTime) + "ms" + Arrays.toString(result));
 

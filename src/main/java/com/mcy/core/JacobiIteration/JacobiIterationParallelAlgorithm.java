@@ -4,6 +4,9 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.concurrent.*;
 
+import static com.mcy.core.utils.IterationUtils.judgeLegal;
+import static com.mcy.core.utils.IterationUtils.meetTheAccuracyRequirements;
+
 /**
  * @author manchaoyang
  * 2019/1/24
@@ -14,7 +17,7 @@ public class JacobiIterationParallelAlgorithm extends JacobiIteration {
     private static int CORE_THREAD_NUMBER = 20;
 
     private ThreadFactory jacobiComputeThreadFactory = new ThreadFactoryBuilder()
-            .setNameFormat("cannonAndFox-compute-matrix-pool-%d").build();
+            .setNameFormat("jacobi-pool-%d").build();
 
     private ExecutorService jacobiThreadPool = new ThreadPoolExecutor(CORE_THREAD_NUMBER, CORE_THREAD_NUMBER * 5,
             100L, TimeUnit.MILLISECONDS,
@@ -32,10 +35,10 @@ public class JacobiIterationParallelAlgorithm extends JacobiIteration {
         while (true) {
             CountDownLatch countDownLatch = new CountDownLatch(N);
             for (int i = 0; i < N; i++) {
-                jacobiThreadPool.execute(new JacobiIterationComputeNode(A,B,X,result,i,countDownLatch));
+                jacobiThreadPool.execute(new JacobiIterationComputeNode(A, B, X, result, i, countDownLatch));
             }
             countDownLatch.await();
-            if (meetTheAccuracyRequirements(X, result)) {
+            if (meetTheAccuracyRequirements(X, result, getPrecision())) {
                 break;
             }
             System.arraycopy(result, 0, X, 0, X.length);
@@ -51,7 +54,7 @@ public class JacobiIterationParallelAlgorithm extends JacobiIteration {
         private int index;
         private CountDownLatch countDownLatch;
 
-        public JacobiIterationComputeNode(double[][] A, double[] B, double[] X, double[] result, int index,CountDownLatch countDownLatch) {
+        public JacobiIterationComputeNode(double[][] A, double[] B, double[] X, double[] result, int index, CountDownLatch countDownLatch) {
             this.A = A;
             this.B = B;
             this.X = X;

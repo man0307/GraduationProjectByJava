@@ -27,28 +27,6 @@ public abstract class JacobiIteration {
      */
     public abstract double[] jacobiIterationCompute(double[][] A, double[] B, double[] X) throws InterruptedException;
 
-    protected boolean judgeLegal(double[][] A, double[] B, double[] X) {
-        boolean noExistNull = A != null && B != null && X != null;
-        boolean lengthLegal = (A.length == A[0].length) && (A.length == B.length) && (B.length == X.length);
-        return noExistNull && lengthLegal;
-    }
-
-    /**
-     * 判断两个数组是否符合精度要求
-     *
-     * @param x
-     * @param result
-     * @return
-     */
-    protected boolean meetTheAccuracyRequirements(double[] x, double[] result) {
-        for (int i = 0; i < x.length; i++) {
-            if(Math.abs(x[i]-result[i])>getPrecision()){
-                return false;
-            }
-        }
-        return true;
-    }
-
     public int getIterationTimes() {
         return iterationTimes;
     }

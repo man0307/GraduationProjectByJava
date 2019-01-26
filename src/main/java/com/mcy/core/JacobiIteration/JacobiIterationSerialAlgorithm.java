@@ -2,6 +2,9 @@ package com.mcy.core.JacobiIteration;
 
 import java.util.Arrays;
 
+import static com.mcy.core.utils.IterationUtils.judgeLegal;
+import static com.mcy.core.utils.IterationUtils.meetTheAccuracyRequirements;
+
 /**
  * @author manchaoyang
  * 串行算法-雅克比迭代
@@ -25,7 +28,7 @@ public class JacobiIterationSerialAlgorithm extends JacobiIteration {
                 result[i] = (B[i] - temp) / A[i][i];
                 temp = 0d;
             }
-            if (meetTheAccuracyRequirements(X, result)) {
+            if (meetTheAccuracyRequirements(X, result,getPrecision())) {
                 break;
             }
             System.arraycopy(result, 0, X, 0, X.length);
