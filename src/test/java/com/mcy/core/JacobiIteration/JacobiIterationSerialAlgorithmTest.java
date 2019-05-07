@@ -17,7 +17,7 @@ public class JacobiIterationSerialAlgorithmTest {
         double[][] res = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                res[i][j] = random.nextInt(100)*1.0;
+                res[i][j] = random.nextInt(100) * 1.0;
             }
         }
         return res;
@@ -26,7 +26,7 @@ public class JacobiIterationSerialAlgorithmTest {
     private double[] mockMatrixB(int n) {
         double[] res = new double[n];
         for (int i = 0; i < n; i++) {
-            res[i] = random.nextInt(100)*1.0 ;
+            res[i] = random.nextInt(100) * 1.0;
         }
         return res;
     }
@@ -44,9 +44,9 @@ public class JacobiIterationSerialAlgorithmTest {
         double[] X = mockMatrixX(3);
 
 
-        double[][] a={{5,2,1},{-1,4,2},{2,-3,10}};
-        double b[]={-12,20,3};
-        double[] x={0,0,0};
+        double[][] a = {{5, 2, 1}, {-1, 4, 2}, {2, -3, 10}};
+        double b[] = {-12, 20, 3};
+        double[] x = {0, 0, 0};
 
 
         long begTime = System.currentTimeMillis();

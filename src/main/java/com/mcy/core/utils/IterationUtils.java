@@ -12,9 +12,9 @@ public class IterationUtils {
      * @param result
      * @return
      */
-    public static boolean meetTheAccuracyRequirements(double[] x, double[] result,double errorLimit) {
+    public static boolean meetTheAccuracyRequirements(double[] x, double[] result, double errorLimit) {
         for (int i = 0; i < x.length; i++) {
-            if(Math.abs(x[i]-result[i])>errorLimit){
+            if (Math.abs(x[i] - result[i]) > errorLimit) {
                 return false;
             }
         }
@@ -24,6 +24,7 @@ public class IterationUtils {
 
     /**
      * 判断高斯-赛尔德与雅克比的输入是否符合要求
+     *
      * @param A
      * @param B
      * @param X

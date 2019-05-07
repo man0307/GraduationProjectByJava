@@ -6,11 +6,12 @@ import java.util.concurrent.*;
 
 /**
  * 用Cannon算法实现矩阵相乘
+ *
  * @author manchaoyang 2019/1/15
  */
 public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlgorithm {
 
-    private static int AVAILABLE_PROCESSORS = 20;
+    private static int AVAILABLE_PROCESSORS = 8;
 
     private ThreadFactory cannonComputeThreadFactory = new ThreadFactoryBuilder()
             .setNameFormat("cannonAndFox-compute-matrix-pool-%d").build();
@@ -20,33 +21,33 @@ public class MatrixMultiplicationAlgorithmCannon extends MatrixMultiplicationAlg
             new LinkedBlockingQueue<Runnable>(1024), cannonComputeThreadFactory,
             new ThreadPoolExecutor.AbortPolicy());
 
-    /**
-     * 按照一定的规则将矩阵分成的块循环整体左移
-     *
-     * @param matrix
-     * @param subMatrixLength
-     * @param step
-     */
-    private void loopLeftShift(long[][] matrix, int subMatrixLength, int step) {
-        int rowMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
-        for (int i = 0; i < rowMatrixCount; i++) {
-            loopLeftShiftByRow(matrix, subMatrixLength, i, step);
-        }
-    }
+//    /**
+//     * 按照一定的规则将矩阵分成的块循环整体左移
+//     *
+//     * @param matrix
+//     * @param subMatrixLength
+//     * @param step
+//     */
+//    private void loopLeftShift(long[][] matrix, int subMatrixLength, int step) {
+//        int rowMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
+//        for (int i = 0; i < rowMatrixCount; i++) {
+//            loopLeftShiftByRow(matrix, subMatrixLength, i, step);
+//        }
+//    }
 
-    /**
-     * 按照一定的规则将矩阵分成的块循环整体上移
-     *
-     * @param matrix
-     * @param subMatrixLength
-     * @param step
-     */
-    private void loopUpShift(long[][] matrix, int subMatrixLength, int step) {
-        int colMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
-        for (int j = 0; j < colMatrixCount; j++) {
-            loopUpShiftByColumn(matrix, subMatrixLength, j, step);
-        }
-    }
+//    /**
+//     * 按照一定的规则将矩阵分成的块循环整体上移
+//     *
+//     * @param matrix
+//     * @param subMatrixLength
+//     * @param step
+//     */
+//    private void loopUpShift(long[][] matrix, int subMatrixLength, int step) {
+//        int colMatrixCount = getMatrixCount(matrix.length, subMatrixLength);
+//        for (int j = 0; j < colMatrixCount; j++) {
+//            loopUpShiftByColumn(matrix, subMatrixLength, j, step);
+//        }
+//    }
 
 
     /**

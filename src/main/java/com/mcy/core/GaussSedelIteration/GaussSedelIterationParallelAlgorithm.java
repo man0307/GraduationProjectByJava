@@ -36,7 +36,7 @@ public class GaussSedelIterationParallelAlgorithm extends GaussSedelIterationAlg
         while (iterationTimes < getMaxIterationTimes()) {
             CountDownLatch countDownLatch = new CountDownLatch(N);
             for (int i = 0; i < N; i++) {
-                gaussSedelThreadPool.execute(new GaussSedelComputeNode(A,X,B,res,countDownLatch,i));
+                gaussSedelThreadPool.execute(new GaussSedelComputeNode(A, X, B, res, countDownLatch, i));
             }
             countDownLatch.await();
             if (meetTheAccuracyRequirements(X, res, getErrorLimit())) {

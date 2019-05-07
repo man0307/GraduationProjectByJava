@@ -26,7 +26,7 @@ public class GaussSedelIterationSerialAlgorithm extends GaussSedelIterationAlgor
                 }
                 res[i] = (B[i] - midRes) / A[i][i];
             }
-            if(meetTheAccuracyRequirements(X,res,getErrorLimit())){
+            if (meetTheAccuracyRequirements(X, res, getErrorLimit())) {
                 break;
             }
             System.arraycopy(res, 0, X, 0, X.length);

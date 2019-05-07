@@ -5,6 +5,7 @@ public abstract class GaussSedelIterationAlgorithm {
     private double errorLimit = 0.0001;
 
     private int maxIterationTimes = 1000;
+
     /**
      * @param A 系数矩阵
      * @param B 常数向量

@@ -28,7 +28,7 @@ public class JacobiIterationSerialAlgorithm extends JacobiIteration {
                 result[i] = (B[i] - temp) / A[i][i];
                 temp = 0d;
             }
-            if (meetTheAccuracyRequirements(X, result,getPrecision())) {
+            if (meetTheAccuracyRequirements(X, result, getPrecision())) {
                 break;
             }
             System.arraycopy(result, 0, X, 0, X.length);

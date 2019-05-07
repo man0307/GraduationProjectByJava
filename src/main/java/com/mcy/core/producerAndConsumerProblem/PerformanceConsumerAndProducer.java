@@ -20,17 +20,18 @@ public class PerformanceConsumerAndProducer {
 
     public void show(int consumerNumber, int producerNumber, int queueSize) {
         SynchronizedQueue synchronizedQueue = new SynchronizedQueue(queueSize);
-        for(int i=0;i<consumerNumber;i++){
+        for (int i = 0; i < consumerNumber; i++) {
             performanceConsumerAndProducerThreadPool.execute(new Consumer(synchronizedQueue));
         }
-        for(int i=0;i<producerNumber;i++){
+        for (int i = 0; i < producerNumber; i++) {
             performanceConsumerAndProducerThreadPool.execute(new Producer(synchronizedQueue));
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         PerformanceConsumerAndProducer performanceConsumerAndProducer = new PerformanceConsumerAndProducer();
-        performanceConsumerAndProducer.show(2,2,100);
-        while (true){}
+        performanceConsumerAndProducer.show(2, 2, 100);
+        while (true) {
+        }
     }
 }

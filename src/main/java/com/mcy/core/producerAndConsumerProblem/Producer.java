@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * @author manchaoyang
  */
-public class Producer implements Runnable{
+public class Producer implements Runnable {
 
     private Random random;
 
@@ -17,7 +17,7 @@ public class Producer implements Runnable{
     }
 
     public void run() {
-        while (true){
+        while (true) {
             try {
                 synchronizedQueue.putData(random.nextInt(100));
             } catch (InterruptedException e) {

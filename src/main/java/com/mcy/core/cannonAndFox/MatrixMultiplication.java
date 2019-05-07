@@ -12,13 +12,9 @@ public class MatrixMultiplication {
 
 
     public long[][] computeByArray(long[][] matrix1, long[][] matrix2) throws InterruptedException {
-        return matrixMultiplicationAlgorithm.computeByArray(matrix1,matrix2);
+        return matrixMultiplicationAlgorithm.computeByArray(matrix1, matrix2);
     }
 
-    public ArrayList<ArrayList<Integer>> computeByList(ArrayList<ArrayList<Integer>> matrix1,
-                                                       ArrayList<ArrayList<Integer>> matrix2) {
-        return null;
-    }
 
     public void setMatrixMultiplicationAlgorithm(MatrixMultiplicationAlgorithm matrixMultiplicationAlgorithm) {
         this.matrixMultiplicationAlgorithm = matrixMultiplicationAlgorithm;
@@ -37,5 +33,10 @@ public class MatrixMultiplication {
         return false;
     }
 
+
+    public ArrayList<ArrayList<Integer>> computeByList(ArrayList<ArrayList<Integer>> matrix1,
+                                                       ArrayList<ArrayList<Integer>> matrix2) {
+        return null;
+    }
 
 }

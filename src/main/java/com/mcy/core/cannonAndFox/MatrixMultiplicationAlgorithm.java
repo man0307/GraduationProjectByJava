@@ -1,7 +1,7 @@
 package com.mcy.core.cannonAndFox;
 
 /**
- * 计算矩阵乘法的接口
+ * 计算矩阵乘法的抽象类
  */
 public abstract class MatrixMultiplicationAlgorithm {
 

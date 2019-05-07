@@ -34,6 +34,7 @@ public class SynchronizedQueue {
         lock.lock();
         try {
             while (size == limit || flag) {
+                conditionCon.signal();
                 conditionPro.await();
             }
             System.out.println("生产者:" + Thread.currentThread().getName() + " 向缓冲区加入了:" + data);

@@ -8,7 +8,8 @@ public class MatrixMultiplicationAlgorithmTest {
      */
     private long[][] matrix1 = new long[1000][1000];
 
-    private long[][] matrix2 = new long[1000][1000];;
+    private long[][] matrix2 = new long[1000][1000];
+    ;
 
     long[][] matrix3 = {
             {1, 2, 3, 4},
@@ -24,7 +25,7 @@ public class MatrixMultiplicationAlgorithmTest {
             {1, 2, 3, 4},
     };
 
-    private void mockMatrix(long[][] array){
+    private void mockMatrix(long[][] array) {
         int number = 1;
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array.length; j++) {
@@ -32,13 +33,14 @@ public class MatrixMultiplicationAlgorithmTest {
             }
         }
     }
+
     @Test
     public void computeByArrayTest() throws InterruptedException {
         mockMatrix(matrix1);
         mockMatrix(matrix2);
         MatrixMultiplication matrixMultiplication = new MatrixMultiplication(new MatrixMultiplicationAlgorithmOrdinary());
         long begTime = System.currentTimeMillis();
-        long[][] result = matrixMultiplication.computeByArray(matrix3, matrix4);
+        long[][] result = matrixMultiplication.computeByArray(matrix1, matrix2);
         long endTime = System.currentTimeMillis();
         System.out.println((endTime - begTime) + " ms");
         printMatrix(result);
@@ -50,10 +52,10 @@ public class MatrixMultiplicationAlgorithmTest {
         mockMatrix(matrix2);
         MatrixMultiplication matrixMultiplication = new MatrixMultiplication(new MatrixMultiplicationAlgorithmCannon());
         long begTime = System.currentTimeMillis();
-        long[][] result = matrixMultiplication.computeByArray(matrix3, matrix4);
+        long[][] result = matrixMultiplication.computeByArray(matrix1, matrix2);
         long endTime = System.currentTimeMillis();
         System.out.println((endTime - begTime) + " ms");
-        printMatrix(result);
+        // printMatrix(result);
     }
 
     @Test
